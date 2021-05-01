@@ -1,0 +1,49 @@
+version: "3"
+services:
+  redis-sitioReservas-master:
+    image: redis
+    command: redis-server /usr/local/etc/redis/redis.conf
+    container_name: redis-sitioReservas-master
+    ports:
+      - 6379:6379
+    volumes:
+      - ./config/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./data/master:/data/
+    networks:
+      redis-network:
+        ipv4_address: 172.22.1.2
+
+  redis-sitioReservas-slave1:
+    image: redis
+    command: redis-server /usr/local/etc/redis/redis.conf
+    container_name: redis-sitioReservas-slave1
+    ports:
+      - 6380:6380
+    volumes:
+      - ./config_slave1/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./data/slave1:/data/
+    networks:
+      redis-network:
+        ipv4_address: 172.22.1.3
+
+  redis-sitioReservas-slave2:
+    image: redis
+    command: redis-server /usr/local/etc/redis/redis.conf
+    container_name: redis-sitioReservas-slave2
+    ports:
+      - 6381:6381
+    volumes:
+      - ./config_slave2/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./data/slave2:/data/
+    networks:
+      redis-network:
+        ipv4_address: 172.22.1.4
+
+networks:
+  redis-network:
+    name: redis-network
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.22.1.0/24
